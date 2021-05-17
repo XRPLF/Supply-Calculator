@@ -1,8 +1,25 @@
-# XRPL Supply calculator
+# XRPL supply calculator
 
-## Work in progress!
+##### Work in progress. Todo:
 
-### Fetch a ledger (output: > 1 GB JSON)
+- [x] Create database & tables
+- [x] Fetch from XRPL
+- [x] Ability to continue fetching if disconnected during process
+- [ ] Calculation
+- [ ] Export crunched numbers to JSON
+- [ ] Express + PM2 service to serve crunched numbers
+
+Fetches an entire ledger (all objects) to a SQLite3 database, then to crunch some numbers.
+
+Use the `DEBUG=xrplstats*` prefix (env. var.) to get output on your terminal while running.
+
+### Fetch a ledger (output: > 1 GB)
+
+This will fetch all ledgers into `output/LEDGERINDEX.sqlite`, table `objects`.
+
+If this process gets stuck (eg. disconnected XRPL node) you can safely quit it and restart
+the process: it will continue fetching data where it left off (thanks to the `marker` in
+the `meta` table)
 
 ```
 npm run fetch LEDGERINDEX
@@ -11,22 +28,34 @@ npm run fetch LEDGERINDEX
 eg.
 
 ```
-npm run fetch 63559050
+npm run fetch 63638161
 ```
-
-This will generate `LEDGERINDEX.json` in the `/output` folder.
 
 Optional environment variables:
  - `SERVER` (a ws:// or wss:// URL)
  - `LIMIT` (number: the amount of markers to follow)
  - `ACCOUNTS` (a comma separated list with accounts to fetch data for)
- - `VERBOSE` (number, DEBUG output, needs `DEBUG=xrplstats*` to show debug output)
+
+#### Sample (raw) command:
+
+```
+SERVER=ws://10.40.4.3:8080 LIMIT=100000 DEBUG=xrplstats* node src/index.js 63638161
+```
 
 ### Calculate results
 
 ```
-VERBOSE=1 DEBUG=xrplstats* node calc.js 63559050
+npm run calc LEDGERINDEX
 ```
 
-This will generate `LEDGERINDEX.output.json` in the `/output` folder.
+eg.
+```
+npm run calc 63638161
+```
+
+#### Sample (raw) command:
+
+```
+DEBUG=xrplstats* src/calc.js 63638161
+```
 

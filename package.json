@@ -1,24 +1,28 @@
 {
   "name": "xrpl-supply-calc",
   "version": "1.0.0",
-  "description": "Fetch XRPL ledger & calculate supply",
-  "main": "index.js",
+  "description": "Fetch XRPL ledger into SQLite3 & calculate supply",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "DEBUG=xrplstats* nodemon index.js",
-    "fetch": "DEBUG=xrplstats* node index.js",
-    "calc": "DEBUG=xrplstats* node calc.js"
+    "dev": "DEBUG=xrplstats* nodemon src/index.js",
+    "fetch": "DEBUG=xrplstats* node src/index.js",
+    "calc": "DEBUG=xrplstats* node src/calc.js"
   },
   "author": "Wietse Wind <xrpl@wietse.com>",
   "license": "MIT",
   "dependencies": {
+    "assert": "^2.0.0",
     "debug": "^2.6.9",
-    "JSONStream": "^1.3.5",
-    "rippled-ws-client": "^1.6.5"
+    "rippled-ws-client": "^1.6.5",
+    "sqlite": "^4.0.22",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
   },
   "nodemonConfig": {
-    "ignore": ["output/*"]
+    "ignore": [
+      "output/*"
+    ]
   }
 }
