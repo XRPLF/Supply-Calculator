@@ -71,7 +71,7 @@ const main = async () => {
       ledger: Number(ledger),
       closeTimeHuman: storeStats.closeTimeHuman,
       xrp: await store.getSupply(),
-      accounts: storeStats.accountCount
+      accounts: storeStats.supplyCount
     }
     log(crunched)
 
