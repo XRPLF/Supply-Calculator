@@ -1,11 +1,12 @@
 const log = require('debug')('xrplstats:xrpl')
 const Client = require('rippled-ws-client')
 
-const limitAccounts = (process.env.ACCOUNTS || '').trim().replace(/[^a-zA-Z0-9]+/g, ',').split(',')
-// const lsfDisableMaster = 0x00100000
-
 let connection
 let ledger
+let lastLedger
+
+const limitAccounts = (process.env.ACCOUNTS || '')
+  .trim().replace(/[^a-zA-Z0-9]+/g, ',').split(',')
 
 const main = async () => {
   const endpoint = process.env.SERVER || 'wss://xrplcluster.com'
@@ -17,11 +18,18 @@ const main = async () => {
 const ready = main()
 
 const getLastLedger = async () => {
+  if (lastLedger) {
+    return lastLedger
+  }
   await ready
-  return (await connection.send({command: 'server_info'})).info.validated_ledger
+  lastLedger = (await connection.send({command: 'server_info'})).info.validated_ledger
+  return lastLedger
 }
 
-const getLedgerInfo = async ledgerIndex => {
+const getLedgerInfo = async (ledgerIndex, fee) => {
+  if (fee) {
+    return await getLastLedger()
+  }
   ledger = ledgerIndex
   await ready
   return (await connection.send({command: 'ledger', ledger_index: ledgerIndex})).ledger
@@ -41,9 +49,9 @@ const fetch = async (persist, initialMarker, persistMarker) => {
       binary: false,
       marker: marker === '_' ? undefined : marker
     })
-    log('Done...')
+    // log('Done...')
     return {
-      state: data.state.filter(s => typeof s.Account !== 'undefined'),
+      state: data.state,
       marker: data.marker
     }
   }
@@ -88,6 +96,7 @@ const close = async () => {
 }
 
 module.exports = {
+  lastLedger,
   getLastLedger,
   getLedgerInfo,
   fetch,

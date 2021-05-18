@@ -1,19 +1,25 @@
 # XRPL supply calculator
 
+This tool will fetch an entire ledger from the XRPL (a websocket node), and store it in
+SQLite3. It'll then allow you to crunch the fetched data to balance stats per account.
+The balance stats per account result in the final number of spendable (free flowing) XRP.
+
+Please note: the SQLite file will end up well over 2GB when this tool is done with the data.
+
 ##### Work in progress. Todo:
 
 - [x] Create database & tables
 - [x] Fetch from XRPL
 - [x] Ability to continue fetching if disconnected during process
-- [ ] Calculation
-- [ ] Export crunched numbers to JSON
+- [x] Calculation
+- [x] Export crunched numbers to JSON
 - [ ] Express + PM2 service to serve crunched numbers
 
 Fetches an entire ledger (all objects) to a SQLite3 database, then to crunch some numbers.
 
 Use the `DEBUG=xrplstats*` prefix (env. var.) to get output on your terminal while running.
 
-### Fetch a ledger (output: > 1 GB)
+### Fetch a ledger
 
 This will fetch all ledgers into `output/LEDGERINDEX.sqlite`, table `objects`.
 
@@ -43,6 +49,11 @@ SERVER=ws://10.40.4.3:8080 LIMIT=100000 DEBUG=xrplstats* node src/index.js 63638
 ```
 
 ### Calculate results
+
+You can always stop the calculation mid process, it will pick up where it left off.
+
+After calculating and writing the per account stats to the SQLite3 file, a `LEDGERINDEX.json`
+file will be placed in the `output` directory containing the `ledger index`, `ledger close time`(human), **amount of XRP spendable** (by all accounts combined) and the **amount of accounts with spendable balance**.
 
 ```
 npm run calc LEDGERINDEX
