@@ -4,20 +4,17 @@ This tool will fetch an entire ledger from the XRPL (a websocket node), and stor
 SQLite3. It'll then allow you to crunch the fetched data to balance stats per account.
 The balance stats per account result in the final number of spendable (free flowing) XRP.
 
-Please note: the SQLite file will end up well over 2GB when this tool is done with the data.
-
-##### Work in progress. Todo:
-
-- [x] Create database & tables
-- [x] Fetch from XRPL
-- [x] Ability to continue fetching if disconnected during process
-- [x] Calculation
-- [x] Export crunched numbers to JSON
-- [ ] Express + PM2 service to serve crunched numbers
+Please note: the SQLite file will end up well over 3GB when this tool is done with the data.
 
 Fetches an entire ledger (all objects) to a SQLite3 database, then to crunch some numbers.
 
 Use the `DEBUG=xrplstats*` prefix (env. var.) to get output on your terminal while running.
+
+Best performance when writing to a ramdisk, use the `output` folder, eg. when checked out
+to `/data/supply-calculator`:
+```
+mount -t tmpfs -o rw,size=4G tmpfs /data/supply-calculator/output
+```
 
 ### Fetch a ledger
 
