@@ -38,15 +38,17 @@ const open = async (ledgerIndex, getLedgerInfo) => {
         closeTimeHuman TEXT,
         reserveBaseXrp INTEGER,
         reserveIncXrp INTEGER,
+        coins INTEGER,
         marker TEXT
       ) WITHOUT ROWID
     `)
 
-    await db.run(`INSERT OR IGNORE INTO meta (ledger, closeTimeHuman, reserveBaseXrp, reserveIncXrp) VALUES (?, ?, ?, ?)`, {
+    await db.run(`INSERT OR IGNORE INTO meta (ledger, closeTimeHuman, reserveBaseXrp, reserveIncXrp, coins) VALUES (?, ?, ?, ?, ?)`, {
       1: ledgerIndex,
       2: ledgerInfo.close_time_human,
       3: ledgerFees.reserve_base_xrp,
-      4: ledgerFees.reserve_inc_xrp
+      4: ledgerFees.reserve_inc_xrp,
+      5: Number(ledgerInfo.total_coins) / 1_000_000,
     })
     log('Created [ meta ] table & inserted meta data')
 
@@ -145,7 +147,8 @@ const getStats = async () => {
     supplyCount: (await db.get(`SELECT COUNT(1) supplyCount FROM supply`)).supplyCount,
     toProcess: (await db.get(`SELECT COUNT(1) toProcessCount FROM supply WHERE dropsBalanceSpendable IS NULL`)).toProcessCount,
     reserveBaseXrp,
-    reserveIncXrp
+    reserveIncXrp,
+    coins: (await db.get(`SELECT coins FROM meta`)).coins,
   }
 }
 
