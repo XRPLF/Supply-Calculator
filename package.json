@@ -13,9 +13,9 @@
   "dependencies": {
     "assert": "^2.0.0",
     "debug": "^2.6.9",
-    "rippled-ws-client": "^1.6.5",
     "sqlite": "^4.0.22",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^4.2.0",
+    "xrpl-client": "^1.9.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"

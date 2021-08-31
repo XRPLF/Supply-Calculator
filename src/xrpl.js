@@ -1,5 +1,5 @@
 const log = require('debug')('xrplstats:xrpl')
-const Client = require('rippled-ws-client')
+const { XrplClient } = require('xrpl-client')
 
 let connection
 let ledger
@@ -10,7 +10,8 @@ const limitAccounts = (process.env.ACCOUNTS || '')
 
 const main = async () => {
   const endpoint = process.env.SERVER || 'wss://xrplcluster.com'
-  connection = await new Client(endpoint)
+  connection = await new XrplClient(endpoint)
+  await connection.ready()
   log('Connected to the XRPL', {endpoint})
   return
 }
